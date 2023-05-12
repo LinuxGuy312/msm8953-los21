@@ -104,3 +104,16 @@ config PROC_CMDLINE_APPEND_ANDROID_FORCE_NORMAL_BOOT
 
 	  This is a workaround to allow recovery-as-boot A/B devices that
 	  launched with Android 9 to use two-stage init.
+
+config PROC_DELLOG
+	bool "Enable Delete log"
+	depends on PROC_FS
+	default y
+
+#ifdef VENDOR_EDIT
+config OPPO_FG_OPT
+	bool "Enable /proc/fg_info/ if EXPERT"
+	default y
+	help
+	  Add foreground process optimize support to promote performance .
+#endif /*VENDOR_EDIT*/
