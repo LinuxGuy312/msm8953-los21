@@ -331,6 +331,7 @@ static int __set_selection(const struct tiocl_selection __user *sel, struct tty_
 		}
 	}
 	sel_buffer_lth = bp - sel_buffer;
+<<<<<<< HEAD
 
 	return ret;
 }
@@ -345,8 +346,23 @@ int set_selection(const struct tiocl_selection __user *v, struct tty_struct *tty
 	console_unlock();
 	mutex_unlock(&sel_lock);
 
+=======
+>>>>>>> c7a39ab612b8 (Add drivers/ modifications)
 	return ret;
 }
+
+int set_selection_kernel(const struct tiocl_selection __user *v, struct tty_struct *tty)
+{
+	int ret;
+	mutex_lock(&sel_lock);
+	console_lock();
+	ret = __set_selection(v, tty);
+	console_unlock();
+	mutex_unlock(&sel_lock);
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(set_selection_kernel);
 
 /* Insert the contents of the selection buffer into the
  * queue of the tty associated with the current console.
@@ -387,6 +403,7 @@ int paste_selection(struct tty_struct *tty)
 			mutex_lock(&sel_lock);
 			continue;
 		}
+		mutex_unlock(&sel_lock);
 		__set_current_state(TASK_RUNNING);
 		count = sel_buffer_lth - pasted;
 		count = tty_ldisc_receive_buf(ld, sel_buffer + pasted, NULL,

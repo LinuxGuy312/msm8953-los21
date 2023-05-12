@@ -2727,7 +2727,7 @@ int tioclinux(struct tty_struct *tty, unsigned long arg)
 	switch (type)
 	{
 		case TIOCL_SETSEL:
-			ret = set_selection((struct tiocl_selection __user *)(p+1), tty);
+gitet = set_selection((struct tiocl_selection __user *)(p+1), tty);
 			break;
 		case TIOCL_PASTESEL:
 			ret = paste_selection(tty);
