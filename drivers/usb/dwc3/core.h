@@ -44,8 +44,10 @@
 #define DWC3_EP0_BOUNCE_SIZE	512
 #define DWC3_ENDPOINTS_NUM	32
 #define DWC3_XHCI_RESOURCES_NUM	2
+#ifdef ODM_WT_EDIT
+/*Hanxing.Duan@ODM.RH.BSP.USB.Basic  Disable device events after maximum error retries     2019.7.23 */
 #define MAX_ERROR_RECOVERY_TRIES	3
-
+#endif /*ODM_WT_EDIT*/
 #define DWC3_SCRATCHBUF_SIZE	4096	/* each buffer is assumed to be 4KiB */
 #define DWC3_EVENT_BUFFERS_SIZE	4096
 #define DWC3_EVENT_TYPE_MASK	0xfe
@@ -863,10 +865,14 @@ struct dwc3_scratchpad_array {
 #define DWC3_GSI_EVT_BUF_ALLOC			10
 #define DWC3_GSI_EVT_BUF_SETUP			11
 #define DWC3_GSI_EVT_BUF_CLEANUP		12
+#ifdef ODM_WT_EDIT
+/*Hanxing.Duan@ODM.RH.BSP.USB.Basic  Disable device events after maximum error retries     2019.7.23 */
 #define DWC3_GSI_EVT_BUF_CLEAR			13
 #define DWC3_GSI_EVT_BUF_FREE			14
 #define DWC3_CONTROLLER_NOTIFY_CLEAR_DB		15
-
+#else /*ODM_WT_EDIT*/
+#define DWC3_GSI_EVT_BUF_FREE			13
+#endif /*ODM_WT_EDIT*/
 #define MAX_INTR_STATS				10
 
 /**
@@ -1195,8 +1201,10 @@ struct dwc3 {
 	bool			create_reg_debugfs;
 	u32			xhci_imod_value;
 	int			core_id;
-	int			retries_on_error;
 	bool			normal_eps_in_gsi_mode;
+#ifdef ODM_WT_EDIT
+	int			retries_on_error;
+#endif /*ODM_WT_EDIT*/
 };
 
 /* -------------------------------------------------------------------------- */
