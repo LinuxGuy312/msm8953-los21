@@ -1847,7 +1847,7 @@ static void inv_args_pre(struct smq_invoke_ctx *ctx)
 {
 	int i, inbufs, outbufs;
 	uint32_t sc = ctx->sc;
-	remote_arg64_t *rpra = ctx->rpra;
+	remote_arg64_t *rpra = ctx->lrpra;
 	uintptr_t end;
 
 	inbufs = REMOTE_SCALARS_INBUFS(sc);
