@@ -1433,7 +1433,9 @@ config TOUCHSCREEN_HIMAX_CHIPSET
           If unsure, say N.
 
 source "drivers/input/touchscreen/hxchipset/Kconfig"
-
+#ifdef ODM_WT_EDIT
+source "drivers/input/touchscreen/ili9881_18663/Kconfig"
+source "drivers/input/touchscreen/nt36525_18663/Kconfig"
 config TOUCHSCREEN_EKTF3XXX_CHIPSET
 	bool "Elan EKTF3XXX touchpanel CHIPSET"
 	depends on I2C
@@ -1481,5 +1483,14 @@ source "drivers/input/touchscreen/nt36672_e7/Kconfig"
 source "drivers/input/touchscreen/td4310_e7/Kconfig"
 source "drivers/input/touchscreen/td4310_lansi_e7/Kconfig"
 source "drivers/input/touchscreen/vituralsar_e7/Kconfig"
+
+config TOUCHSCREEN_HIMAX_IC_HX83102
+ bool "himax Touchscreen Driver"
+          default y
+          help
+            Say Y here if you have a himax Touchscreen.
+            If unsure, say N
+source "drivers/input/touchscreen/himax_hx83102d/Kconfig"
+#endif
 
 endif
