@@ -40,7 +40,21 @@ static DEFINE_IDR(zram_index_idr);
 static DEFINE_MUTEX(zram_index_mutex);
 
 static int zram_major;
-static const char *default_compressor = CONFIG_ZRAM_DEFAULT_COMP_ALGORITHM;
+#ifdef VENDOR_EDIT
+#ifdef CONFIG_CRYPTO_LZ4
+static const char *default_compressor = "lz4";
+#else /*CONFIG_ZRAM_LZ4_COMPRESS*/
+static const char *default_compressor = "lzo";
+#endif /*CONFIG_ZRAM_LZ4_COMPRESS*/
+#else /*VENDOR_EDIT*/
+static const char *default_compressor = "lzo";
+#endif/*VENDOR_EDIT*/
+
+/*
+ * We don't need to see memory allocation errors more than once every 1
+ * second to know that a problem is occurring.
+ */
+#define ALLOC_ERROR_LOG_RATE_MS 1000
 
 /* Module params (documentation at end) */
 static unsigned int num_devices = 1;
@@ -2032,8 +2046,12 @@ static int zram_add(void)
 	add_disk(zram->disk);
 
 	strlcpy(zram->compressor, default_compressor, sizeof(zram->compressor));
+<<<<<<< HEAD
 
 	zram_debugfs_register(zram);
+=======
+	zram->meta = NULL;
+>>>>>>> 5fea95831c9b (Add drivers/block/ modifications)
 	pr_info("Added device: %s\n", zram->disk->disk_name);
 	return device_id;
 
