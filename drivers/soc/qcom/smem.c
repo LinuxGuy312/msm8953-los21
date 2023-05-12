@@ -428,7 +428,6 @@ int qcom_smem_alloc(unsigned host, unsigned item, size_t size)
 	} else {
 		ret = qcom_smem_alloc_global(__smem, item, size);
 	}
-
 	hwspin_unlock_irqrestore(__smem->hwlock, &flags);
 
 	return ret;
