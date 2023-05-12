@@ -5109,7 +5109,6 @@ static int selinux_nlmsg_perm(struct sock *sk, struct sk_buff *skb)
 		} else {
 			return rc;
 		}
-
 		/* move to the next message after applying netlink padding */
 		msg_len = NLMSG_ALIGN(nlh->nlmsg_len);
 		if (msg_len >= data_len)
@@ -5117,7 +5116,6 @@ static int selinux_nlmsg_perm(struct sock *sk, struct sk_buff *skb)
 		data_len -= msg_len;
 		data += msg_len;
 	}
-
 	return rc;
 }
 
@@ -6597,6 +6595,14 @@ void selinux_complete_init(void)
 	printk(KERN_DEBUG "SELinux:  Setting up existing superblocks.\n");
 	iterate_supers(delayed_superblock_init, NULL);
 }
+
+#ifdef VENDOR_EDIT
+int get_current_security_context(char **context, u32 *context_len)
+{
+	u32 sid = current_sid();
+	return security_sid_to_context(sid, context, context_len);
+}
+#endif /* VENDOR_EDIT */
 
 /* SELinux requires early initialization in order to label
    all processes and objects when they are created. */
