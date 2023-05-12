@@ -45,6 +45,10 @@ struct rw_semaphore {
 	/* count for waiters preempt to queue in wait list */
 	long m_count;
 #endif
+#ifdef ODM_WT_EDIT
+	struct task_struct *debug_current;
+	unsigned long debug_address;
+#endif
 };
 
 extern struct rw_semaphore *rwsem_down_read_failed(struct rw_semaphore *sem);
