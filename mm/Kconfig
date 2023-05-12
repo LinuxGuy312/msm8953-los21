@@ -851,3 +851,11 @@ config OPLUS_MM_HACKS
 	  Tested on devices made by OEMs like Motorola and Samsung.
 
 	  If unsure, say "n".
+
+#ifdef VENDOR_EDIT
+config OPPO_MEM_MONITOR
+	bool "memory monitor "
+	default n
+	help
+	 memory monitor.
+#endif /*VENDOR_EDIT*/

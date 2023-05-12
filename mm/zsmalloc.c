@@ -74,6 +74,12 @@
 #else
 #define ZS_MAX_ZSPAGE_ORDER 2
 #endif /* CONFIG_OPLUS_MM_HACKS */
+#ifndef VENDOR_EDIT
+#define ZS_MAX_ZSPAGE_ORDER 2
+#else
+#define ZS_MAX_ZSPAGE_ORDER 3
+#endif
+
 #define ZS_MAX_PAGES_PER_ZSPAGE (_AC(1, UL) << ZS_MAX_ZSPAGE_ORDER)
 
 #define ZS_HANDLE_SIZE (sizeof(unsigned long))
@@ -290,6 +296,12 @@ struct zs_pool {
 #else
 #define ISOLATED_BITS	3
 #endif /* CONFIG_OPLUS_MM_HACKS */
+#ifdef VENDOR_EDIT
+#define ISOLATED_BITS	(ZS_MAX_ZSPAGE_ORDER+1)
+#else
+#define ISOLATED_BITS	3
+#endif
+
 #define MAGIC_VAL_BITS	8
 
 struct zspage {
