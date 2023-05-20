@@ -105,7 +105,15 @@
 #define a_mode_rates_size (8)
 #define FREQ_BASE_80211G          (2407)
 #define FREQ_BAND_DIFF_80211G     (5)
+#ifndef VENDOR_EDIT
+//Modify for scan more hidden AP
+/*
 #define MAX_SCAN_SSID 9
+*/
+#else /* VENDOR_EDIT */
+#define MAX_SCAN_SSID 16
+#endif /* VENDOR_EDIT */
+
 #define MAX_PENDING_LOG 5
 #define GET_IE_LEN_IN_BSS_DESC(lenInBss) ( lenInBss + sizeof(lenInBss) - \
         ((uintptr_t)OFFSET_OF( tSirBssDescription, ieFields)))
@@ -8244,6 +8252,150 @@ static int __wlan_hdd_cfg80211_wifi_configuration_set(struct wiphy *wiphy,
     return ret_val;
 }
 
+#ifdef VENDOR_EDIT
+//Add for: hotspot manager
+static const struct nla_policy
+oppo_attr_policy[OPPO_WLAN_VENDOR_ATTR_MAX + 1] = {
+	[OPPO_WLAN_VENDOR_ATTR_MAC_ADDR] = {.type = NLA_BINARY, .len = VOS_MAC_ADDR_SIZE},
+	[OPPO_WLAN_VENDOR_ATTR_WETHER_BLOCK_CLIENT] = {.type = NLA_U8},
+	[OPPO_WLAN_VENDOR_ATTR_SAP_MAX_CLIENT_NUM] = {.type = NLA_U32},
+};
+
+static int __wlan_hdd_cfg80211_oppo_modify_acl(struct wiphy *wiphy,
+					struct wireless_dev *wdev,
+					const void *data, int data_len)
+{
+	int32_t status;
+	struct nlattr* tb[OPPO_WLAN_VENDOR_ATTR_MAX + 1];
+	uint8_t extra[8];
+	int8_t block;
+
+	ENTER();
+
+	status = nla_parse(tb, OPPO_WLAN_VENDOR_ATTR_MAX,
+					data, data_len, oppo_attr_policy);
+	if (status) {
+		hddLog(LOGE,"Invalid attributes!");
+		status = -EINVAL;
+		goto out;
+	}
+
+	if (tb[OPPO_WLAN_VENDOR_ATTR_MAC_ADDR]) {
+		nla_memcpy(extra, tb[OPPO_WLAN_VENDOR_ATTR_MAC_ADDR], VOS_MAC_ADDR_SIZE);
+	} else {
+		hddLog(LOGE,"Invalid argument:No sta mac addr provided!");
+		status = -EINVAL;
+		goto out;
+	}
+	if (tb[OPPO_WLAN_VENDOR_ATTR_WETHER_BLOCK_CLIENT]) {
+		block = nla_get_u8(tb[OPPO_WLAN_VENDOR_ATTR_WETHER_BLOCK_CLIENT]);
+	} else {
+		hddLog(LOGE,"Invalid argument:No block value!");
+		status = -EINVAL;
+		goto out;
+	}
+
+	//we always modify black list, as for now
+	extra[6] = 0;
+	extra[7] = block;
+
+	status = oppo_wlan_hdd_modify_acl(wdev->netdev, (char*)extra);
+	if (0 != status) {
+		hddLog(LOGE,"failed to modify acl! %d", status);
+		goto out;
+	}
+
+out:
+	EXIT();
+	return status;
+}
+
+/**
+ * wlan_hdd_cfg80211_oppo_modify_acl() - modify acl
+ * @wiphy: Pointer to wiphy
+ * @wdev: Pointer to wireless device
+ * @data: vendor command extra data
+ * @data_len: the size of extra data
+ *
+ * Return: 0 for success, non-zero for failure
+ */
+static int wlan_hdd_cfg80211_oppo_modify_acl(struct wiphy *wiphy,
+				  struct wireless_dev *wdev,
+				  const void *data, int data_len)
+{
+	int ret;
+
+	vos_ssr_protect(__func__);
+	ret = __wlan_hdd_cfg80211_oppo_modify_acl(wiphy, wdev, data, data_len);
+	vos_ssr_unprotect(__func__);
+
+	return ret;
+}
+
+static int __wlan_hdd_cfg80211_oppo_set_max_assoc(struct wiphy *wiphy,
+					  struct wireless_dev *wdev,
+					  const void *data, int data_len)
+{
+	uint32_t status;
+	int extra[2];
+	uint32_t max_clients;
+	struct nlattr* tb[OPPO_WLAN_VENDOR_ATTR_MAX + 1];
+
+	ENTER();
+
+	status = nla_parse(tb, OPPO_WLAN_VENDOR_ATTR_MAX,
+					data, data_len, oppo_attr_policy);
+
+	if (status) {
+		hddLog(LOGE,"Invalid attributes!");
+		status = -EINVAL;
+		goto out;
+	}
+
+	if (tb[OPPO_WLAN_VENDOR_ATTR_SAP_MAX_CLIENT_NUM]) {
+		max_clients = nla_get_u32(tb[OPPO_WLAN_VENDOR_ATTR_SAP_MAX_CLIENT_NUM]);
+	} else {
+		hddLog(LOGE,"Invalid argument!");
+		status = -EINVAL;
+		goto out;
+	}
+
+	extra[0] = QCSAP_PARAM_MAX_ASSOC;
+	extra[1] = max_clients;
+
+	status = oppo_wlan_hdd_set_max_assoc(wdev->netdev, (char*)extra);
+	if (0 != status) {
+		hddLog(LOGE,"failed to set max assoc!");
+		goto out;
+	}
+
+out:
+	EXIT();
+	return status;
+}
+
+/**
+ * wlan_hdd_cfg80211_oppo_set_max_assoc() - modify acl
+ * @wiphy: Pointer to wiphy
+ * @wdev: Pointer to wireless device
+ * @data: vendor command extra data
+ * @data_len: the size of extra data
+ *
+ * Return: 0 for success, non-zero for failure
+ */
+static int wlan_hdd_cfg80211_oppo_set_max_assoc(struct wiphy *wiphy,
+					  struct wireless_dev *wdev,
+					  const void *data, int data_len)
+{
+	int ret;
+	vos_ssr_protect(__func__);
+	ret = __wlan_hdd_cfg80211_oppo_set_max_assoc(wiphy, wdev, data, data_len);
+	vos_ssr_unprotect(__func__);
+
+	return ret;
+}
+#endif /* VENDOR_EDIT */
+
 /**
  * wlan_hdd_cfg80211_wifi_configuration_set() - Wifi configuration
  * vendor command
@@ -9052,6 +9204,26 @@ const struct wiphy_vendor_command hdd_wiphy_vendor_commands[] =
                  WIPHY_VENDOR_CMD_NEED_NETDEV,
         .doit = wlan_hdd_cfg80211_get_logger_supp_feature
    },
+
+#ifdef VENDOR_EDIT
+   //add for: hotspot manager via wificond
+   {
+       .info.vendor_id = QCA_NL80211_VENDOR_ID,
+       .info.subcmd = OPPO_NL80211_VENDOR_SUBCMD_MODIFY_ACL,
+       .flags = WIPHY_VENDOR_CMD_NEED_WDEV |
+            WIPHY_VENDOR_CMD_NEED_NETDEV |
+            WIPHY_VENDOR_CMD_NEED_RUNNING,
+       .doit = wlan_hdd_cfg80211_oppo_modify_acl
+   },
+   {
+       .info.vendor_id = QCA_NL80211_VENDOR_ID,
+       .info.subcmd = OPPO_NL80211_VENDOR_SUBCMD_SET_MAX_ASSOC,
+       .flags = WIPHY_VENDOR_CMD_NEED_WDEV |
+            WIPHY_VENDOR_CMD_NEED_NETDEV |
+            WIPHY_VENDOR_CMD_NEED_RUNNING,
+       .doit = wlan_hdd_cfg80211_oppo_set_max_assoc
+   },
+#endif /* VENDOR_EDIT */
 };
 
 /* vendor specific events */

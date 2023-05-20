@@ -2268,10 +2268,6 @@ static void hdd_SendReAssocEvent(struct net_device *dev, hdd_adapter_t *pAdapter
                 __func__, pCsrRoamInfo->nAssocRspLength);
          goto done;
     }
-    rspRsnLength = len;
-    memcpy(rspRsnIe, pFTAssocRsp, len);
-    memset(rspRsnIe + len, 0, IW_GENERIC_IE_MAX - len);
-
     chan = ieee80211_get_channel(pAdapter->wdev.wiphy,
              (int) pCsrRoamInfo->pBssDesc->channelId);
     vos_mem_zero(&roam_profile, sizeof(tCsrRoamConnectedProfile));
