@@ -937,6 +937,13 @@ config BOOTPARAM_HUNG_TASK_PANIC_VALUE
 	default 0 if !BOOTPARAM_HUNG_TASK_PANIC
 	default 1 if BOOTPARAM_HUNG_TASK_PANIC
 
+#ifdef VENDOR_EDIT
+config DEATH_HEALER
+	bool "Enable DeathHealer"
+	depends on DETECT_HUNG_TASK
+	default n
+#endif
+
 config WQ_WATCHDOG
 	bool "Detect Workqueue Stalls"
 	depends on DEBUG_KERNEL
@@ -2141,7 +2148,6 @@ config PANIC_ON_DATA_CORRUPTION
 config BUG_ON_DATA_CORRUPTION
 	bool "Trigger a BUG when data corruption is detected"
 	select CONFIG_DEBUG_LIST
-	help
 	  Select this option if the kernel should BUG when it encounters
 	  data corruption in kernel memory structures when they get checked
 	  for validity.
@@ -2150,8 +2156,6 @@ config BUG_ON_DATA_CORRUPTION
 
 config CC_WERROR
 	bool "Treat all compile warnings as errors"
-	default n
-	help
 	 Select this option to set compiler warnings as errors,
 	 to prevent easily-fixable problems from creeping into
 	 the codebase.
