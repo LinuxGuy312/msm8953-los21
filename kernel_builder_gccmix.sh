@@ -24,9 +24,9 @@ export ARCH=arm64
 export SUBARCH=arm64
 export HEADER_ARCH=arm64
 
-#if [ ! -d "KernelSU" ]; then
-#  git clone https://github.com/backslashxx/KernelSU -b 11458
-#fi
+if [ ! -d "KernelSU" ]; then
+  git clone https://github.com/backslashxx/KernelSU -b 11458
+fi
 
 KSUVER="$(cd KernelSU/;expr 10000 + $(git rev-list --count HEAD) + 199)"
 
