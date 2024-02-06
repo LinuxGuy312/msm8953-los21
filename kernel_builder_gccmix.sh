@@ -25,10 +25,10 @@ export SUBARCH=arm64
 export HEADER_ARCH=arm64
 
 if [ ! -d "KernelSU" ]; then
-  git clone https://github.com/backslashxx/KernelSU -b 11458+1
+  git clone https://github.com/backslashxx/KernelSU -b 11509
 fi
 
-KSUVER="$(cd KernelSU/;expr 10000 + $(git rev-list --count HEAD) + 199)"
+KSUVER="$(cd KernelSU/;git symbolic-ref --short HEAD)"
 
 # Garbage removal
 
@@ -82,7 +82,7 @@ make -j24 ARCH=arm64 SUBARCH=arm64 O="out_$DEVICENAME" \
         INSTALL_MOD_STRIP=1 \
 	KBUILD_BUILD_USER="$(git rev-parse --short HEAD | cut -c1-7)" \
 	KBUILD_BUILD_HOST="$(git symbolic-ref --short HEAD)" \
-	KBUILD_BUILD_FEATURES="ksu:# $KSUVER+1 / cpu: 2208MHz 🔥 990mV 🧊 / gpu: 725MHz 🔥 / ddr: 1066MHz 🔥 / vdso32: ✅ / mods: adrenoboost anxiety bbr+ bfq+eqm bore-sched kcal le9ec lz4-asm pltopt pewq SBalance wl_blocker zzmoove zram_entropy_threshold //"
+	KBUILD_BUILD_FEATURES="ksu:# $KSUVER / cpu: 2208MHz 🔥 990mV 🧊 / gpu: 725MHz 🔥 / ddr: 1066MHz 🔥 / vdso32: ✅ / mods: adrenoboost anxiety bbr+ bfq+eqm bore-sched kcal le9ec lz4-asm pltopt pewq SBalance wl_blocker zzmoove zram_entropy_threshold //"
 
 ccache -s
 echo "ksu: $KSUVER"
