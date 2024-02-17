@@ -24,11 +24,11 @@ export ARCH=arm64
 export SUBARCH=arm64
 export HEADER_ARCH=arm64
 
-if [ ! -d "KernelSU" ]; then
-  git clone https://github.com/backslashxx/KernelSU -b 11458+1
-fi
+KSUVER="11458+1"
 
-KSUVER="$(cd KernelSU/;git symbolic-ref --short HEAD)"
+if [ ! -d "KernelSU" ]; then
+  git clone https://github.com/backslashxx/KernelSU -b $KSUVER
+fi
 
 # Garbage removal
 
