@@ -462,6 +462,27 @@ int ksu_handle_prctl(int option, unsigned long arg2, unsigned long arg3,
             pr_info("susfs: CMD_SUSFS_ADD_UNAME -> ret: %d\n", error);
             copy_to_user((void __user*)arg5, &error, sizeof(error));
 			return 0;
+		} else if (arg2 == CMD_SUSFS_ADD_SUSPICIOUS_KSTAT_STATICALLY) {
+			if (!access_ok(VERIFY_READ, (void __user*)arg3, sizeof(struct st_susfs_suspicious_kstat))) {
+				pr_err("susfs: CMD_SUSFS_ADD_SUSPICIOUS_KSTAT_STATICALLY -> arg3 is not accessible\n");
+                return 0;
+			}
+			if (!access_ok(VERIFY_READ, (void __user*)arg5, sizeof(error))) {
+				pr_err("susfs: CMD_SUSFS_ADD_SUSPICIOUS_KSTAT_STATICALLY -> arg5 is not accessible\n");
+                return 0;
+			}
+			error = susfs_add_suspicious_kstat((struct st_susfs_suspicious_kstat __user*)arg3);
+            pr_info("susfs: CMD_SUSFS_ADD_SUSPICIOUS_KSTAT_STATICALLY -> ret: %d\n", error);
+            copy_to_user((void __user*)arg5, &error, sizeof(error));
+			return 0;
+		} else if (arg2 == CMD_SUSFS_ENABLE_LOG) {
+			if (arg3 != 0 && arg3 != 1) {
+				pr_err("susfs: CMD_SUSFS_ENABLE_LOG -> arg3 can only be 0 or 1\n");
+                return 0;
+			}
+			susfs_set_log(arg3);
+            copy_to_user((void __user*)arg5, &error, sizeof(error));
+			return 0;
 		}
         return 0;
 	}
