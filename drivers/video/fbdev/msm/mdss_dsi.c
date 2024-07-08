@@ -570,11 +570,6 @@ static int mdss_dsi_panel_power_off(struct mdss_panel_data *pdata)
 		ctrl_pdata->panel_power_data.num_vreg, 0);
 #endif /* ODM_WT_EDIT */
 
-	if (ret)
-		pr_err("%s: failed to disable vregs for %s\n",
-			__func__, __mdss_dsi_pm_name(DSI_PANEL_PM));
-#endif
-
 end:
 
 	#ifdef ODM_WT_EDIT

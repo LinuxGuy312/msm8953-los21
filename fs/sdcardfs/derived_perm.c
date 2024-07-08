@@ -82,7 +82,7 @@ void get_derived_permission_new(struct inode *parent, struct inode *inode,
 	struct qstr q_dcim = QSTR_LITERAL("DCIM");
 	struct qstr q_camera = QSTR_LITERAL("Camera");
 	struct qstr q_screenshots = QSTR_LITERAL("Screenshots");
-	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(dentry->d_sb);
+	struct sdcardfs_sb_info *sbi = SDCARDFS_SB(inode->i_sb);
 #endif /* VENDOR_EDIT */
 
 	/* By default, each inode inherits from its parent.

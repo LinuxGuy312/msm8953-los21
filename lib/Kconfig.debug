@@ -2148,6 +2148,7 @@ config PANIC_ON_DATA_CORRUPTION
 config BUG_ON_DATA_CORRUPTION
 	bool "Trigger a BUG when data corruption is detected"
 	select CONFIG_DEBUG_LIST
+	help
 	  Select this option if the kernel should BUG when it encounters
 	  data corruption in kernel memory structures when they get checked
 	  for validity.
@@ -2156,6 +2157,7 @@ config BUG_ON_DATA_CORRUPTION
 
 config CC_WERROR
 	bool "Treat all compile warnings as errors"
+	help
 	 Select this option to set compiler warnings as errors,
 	 to prevent easily-fixable problems from creeping into
 	 the codebase.

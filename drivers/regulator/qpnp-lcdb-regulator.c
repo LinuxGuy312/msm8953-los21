@@ -1303,7 +1303,7 @@ static int qpnp_lcdb_ldo_regulator_set_voltage(struct regulator_dev *rdev,
 	lcdb->ldo.voltage_mv = min_uV / 1000;
 	if (lcdb->voltage_step_ramp)
 		rc = qpnp_lcdb_set_voltage_step(lcdb,
-			lcdb->ldo.prev_voltage_mv + VOLTAGE_STEP_MV, LDO);
+			lcdb->ldo.voltage_mv + VOLTAGE_STEP_25_MV, LDO);
 	else
 		rc = qpnp_lcdb_set_voltage(lcdb, lcdb->ldo.voltage_mv, LDO);
 
@@ -1391,7 +1391,7 @@ static int qpnp_lcdb_ncp_regulator_set_voltage(struct regulator_dev *rdev,
 	lcdb->ncp.voltage_mv = min_uV / 1000;
 	if (lcdb->voltage_step_ramp)
 		rc = qpnp_lcdb_set_voltage_step(lcdb,
-			lcdb->ncp.prev_voltage_mv + VOLTAGE_STEP_MV, NCP);
+			lcdb->ncp.voltage_mv + VOLTAGE_STEP_25_MV, NCP);
 	else
 		rc = qpnp_lcdb_set_voltage(lcdb, lcdb->ncp.voltage_mv, NCP);
 

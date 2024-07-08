@@ -290,10 +290,6 @@ struct media_entity {
 		} dev;
 	} info;
 
-	#ifdef VENDOR_EDIT
-	u32 revision;
-	u32 group_id;
-	#endif
 };
 
 /**

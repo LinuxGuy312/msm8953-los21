@@ -412,8 +412,8 @@ LINUXINCLUDE	+= $(filter-out $(LINUXINCLUDE),$(USERINCLUDE))
 KBUILD_AFLAGS   := -D__ASSEMBLY__
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common -fshort-wchar \
-		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
+		   -Wno-error
 		   -std=gnu89
 KBUILD_CPPFLAGS := -D__KERNEL__
 KBUILD_AFLAGS_KERNEL :=
@@ -869,8 +869,8 @@ endif
 # Tell compiler to tune the performance of the code for a specified
 # target processor
 ifeq ($(cc-name),gcc)
-KBUILD_CFLAGS += -mcpu=cortex-a53+crc+crypto -mtune=cortex-a53 -funswitch-loops -funroll-loops -fpeel-loops -fsplit-loops -Wno-error
-KBUILD_AFLAGS += -mcpu=cortex-a53+crc+crypto -mtune=cortex-a53 -funswitch-loops -funroll-loops -fpeel-loops -fsplit-loops -Wno-error
+KBUILD_CFLAGS += -mcpu=cortex-a53+crc+crypto -mtune=cortex-a53 -funswitch-loops -funroll-loops -fpeel-loops -Wno-error
+KBUILD_AFLAGS += -mcpu=cortex-a53+crc+crypto -mtune=cortex-a53 -funswitch-loops -funroll-loops -fpeel-loops -Wno-error
 else ifeq ($(cc-name),clang)
 KBUILD_CFLAGS += -mcpu=cortex-a53+crc+crypto -mtune=cortex-a53 -funroll-loops
 KBUILD_AFLAGS += -mcpu=cortex-a53+crc+crypto -mtune=cortex-a53 -funroll-loops
@@ -880,12 +880,7 @@ endif
 # Future support for zero initialization is still being debated, see
 # https://bugs.llvm.org/show_bug.cgi?id=45497. These flags are subject to being
 # renamed or dropped.
-KBUILD_CFLAGS  += -ftrivial-auto-var-init=zero
 KBUILD_CFLAGS  += $(call cc-option, -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang)
-
-ifdef CONFIG_CC_WERROR
-KBUILD_CFLAGS	+= -Werror
-endif
 
 ifdef CONFIG_CC_WERROR
 KBUILD_CFLAGS	+= -Werror

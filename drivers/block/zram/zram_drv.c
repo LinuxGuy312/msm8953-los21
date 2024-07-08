@@ -2046,12 +2046,8 @@ static int zram_add(void)
 	add_disk(zram->disk);
 
 	strlcpy(zram->compressor, default_compressor, sizeof(zram->compressor));
-<<<<<<< HEAD
 
 	zram_debugfs_register(zram);
-=======
-	zram->meta = NULL;
->>>>>>> 5fea95831c9b (Add drivers/block/ modifications)
 	pr_info("Added device: %s\n", zram->disk->disk_name);
 	return device_id;
 

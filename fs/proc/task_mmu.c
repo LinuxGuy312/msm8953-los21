@@ -859,20 +859,20 @@ static int show_smap(struct seq_file *m, void *v, int is_pid)
 
 #ifdef VENDOR_EDIT
 	if (strcmp(current->comm, "android.bg") == 0) {
-		if ((unsigned long)(mss.pss >> (10 + PSS_SHIFT)) > 0) {
+		if ((unsigned long)(mss->pss >> (10 + PSS_SHIFT)) > 0) {
 			seq_printf(m,
 				"Pss:            %8lu kB\n",
-			(	unsigned long)(mss.pss >> (10 + PSS_SHIFT)));
+			(	unsigned long)(mss->pss >> (10 + PSS_SHIFT)));
 		}
-		if ((mss.private_clean >> 10) > 0) {
+		if ((mss->private_clean >> 10) > 0) {
 			seq_printf(m,
 				"Private_Clean:  %8lu kB\n",
-				mss.private_clean >> 10);
+				mss->private_clean >> 10);
 		}
-		if ((mss.private_dirty >> 10) > 0) {
+		if ((mss->private_dirty >> 10) > 0) {
 			seq_printf(m,
 				"Private_Dirty:  %8lu kB\n",
-				mss.private_dirty >> 10);
+				mss->private_dirty >> 10);
 		}
 		m_cache_vma(m, vma);
 		return 0;
